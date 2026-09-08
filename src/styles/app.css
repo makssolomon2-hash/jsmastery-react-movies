@@ -1,0 +1,20 @@
+﻿#root,
+.app-shell {
+    width: 100%;
+    min-height: 100svh;
+}
+
+html,
+body {
+    min-width: 320px;
+    min-height: 100svh;
+    margin: 0;
+    background-color: #171717;
+   
+}
+
+#root {
+    max-width: none;
+    padding: 0;
+    margin: 0;
+}
