@@ -8,8 +8,60 @@ import { useRef } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 
+//Fetch the API
+import {useEffect} from "react";
+const API_BASE_URL = 'https://api.themoviedb.org/3';
+const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
+
+const API_OPTIONS = {
+    method: 'GET',
+    headers:{
+        accept: 'application/json',
+        Authorization: `Bearer ${API_KEY}`
+    }
+}
+
 const Header = () => {
     const [searchTerm, setSearchTerm] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
+    const [movieList, setMovieList] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
+
+    const fetchMovies = async () => {
+        setIsLoading(true);
+        setErrorMessage('');
+
+        try{
+            const endpoint = `${API_BASE_URL}/discover/movie?include_adult=false&include_video=false&language=en-US&page=2&sort_by=popularity.desc`;
+
+            const response = await fetch(endpoint, API_OPTIONS);
+
+            if(!response.ok){
+                throw new Error('Failed to fetch movies.')
+            }
+
+            const data = await response.json();
+            console.log(data);
+
+            if(data.Response === 'False') {
+                setErrorMessage(data.Error || 'Failed to fetch movies.');
+                setMovieList([]);
+                return;
+            }
+            setMovieList(data.results || []);
+
+        } catch (error) {
+            console.error(`Error fetching movies: ${error}`);
+            setErrorMessage('Error fetching movies.')
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
+    useEffect(() => {
+        fetchMovies();
+    },[])
+
     const container = useRef(null);
 
     useGSAP(() => {
@@ -46,6 +98,24 @@ const Header = () => {
                         <Search className="hero-item" searchTerm={searchTerm} setSearchTerm={setSearchTerm}/>
                         <h1 className="hero-item text-white">{searchTerm}</h1>
                     </div>
+
+                    <section className="flex flex-col mx-auto items-center justify-center mt-15">
+                        <h2>All Movies</h2>
+
+                        {isLoading ? (
+                            <p className="text-5xl font-bold">Loading...</p>
+                        ) : errorMessage ? (
+                            <p className="text-red-500">{errorMessage}</p>
+                        ) : (
+                            <ul>
+                                {movieList.map((movie) =>(
+                                   <p className="text-2xl font-bold p-5"> {movie.title}</p>
+                                ))}
+                            </ul>
+                        )}
+
+                        {/*{errorMessage && <p className="text-red-500">{errorMessage}</p>}*/}
+                    </section>
 
 
                 </div>
