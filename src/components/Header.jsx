@@ -32,7 +32,7 @@ const Header = () => {
         setErrorMessage('');
 
         try{
-            const endpoint = `${API_BASE_URL}/discover/movie?include_adult=false&include_video=false&language=en-US&page=2&sort_by=popularity.desc`;
+            const endpoint = `${API_BASE_URL}/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc`;
 
             const response = await fetch(endpoint, API_OPTIONS);
 
@@ -81,7 +81,7 @@ const Header = () => {
             <img
                 src={heroBg}
                 alt=""
-                className="absolute inset-0 h-full w-full object-cover"
+                className="absolute inset-0 h-full w-full object-fill"
             />
 
             <div className="flex flex-col mx-auto items-center justify-center text-white ">
@@ -99,20 +99,35 @@ const Header = () => {
                         <h1 className="hero-item text-white">{searchTerm}</h1>
                     </div>
 
-                    <section className="flex flex-col mx-auto items-center justify-center mt-15">
-                        <h2>All Movies</h2>
+                    <section className="flex flex-wrap  items-center justify-center mt-15">
+                        <h2>All Movies</h2>s
 
-                        {isLoading ? (
-                            <p className="text-5xl font-bold">Loading...</p>
-                        ) : errorMessage ? (
-                            <p className="text-red-500">{errorMessage}</p>
-                        ) : (
-                            <ul>
-                                {movieList.map((movie) =>(
-                                   <p className="text-2xl font-bold p-5"> {movie.title}</p>
-                                ))}
-                            </ul>
-                        )}
+                        <div className="">
+                            {isLoading ? (
+                                <p className="text-5xl font-bold">Loading...</p>
+                            ) : errorMessage ? (
+                                <p className="text-red-500">{errorMessage}</p>
+                            ) : (
+                                <ul className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+                                    {movieList.map((movie) =>(
+                                        <div className="movie-card flex flex-col mx-auto items-center justify-center w-full p-1 m-5">
+                                            <p className="text-2xl font-bold p-2"> {movie.title}</p>
+                                            <img
+                                                src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+                                                alt={movie.title}
+                                                className="w-150 p-3 rounded-2xl "
+                                            />
+                                            {/*<p className="p-10 w-100">{movie.overview}</p>*/}
+
+                                        </div>
+
+
+                                    ))}
+                                </ul>
+                            )}
+                        </div>
+
+
 
                         {/*{errorMessage && <p className="text-red-500">{errorMessage}</p>}*/}
                     </section>
