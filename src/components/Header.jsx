@@ -29,12 +29,14 @@ const Header = () => {
     const [movieList, setMovieList] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
 
-    const fetchMovies = async () => {
+    const fetchMovies = async (query = '') => {
         setIsLoading(true);
         setErrorMessage('');
 
         try{
-            const endpoint = `${API_BASE_URL}/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc`;
+            const endpoint = query
+                ? `${API_BASE_URL}/search/movie?query=${encodeURIComponent(query)}`
+                : `${API_BASE_URL}/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc`;
 
             const response = await fetch(endpoint, API_OPTIONS);
 
@@ -61,8 +63,8 @@ const Header = () => {
     }
 
     useEffect(() => {
-        fetchMovies();
-    },[])
+        fetchMovies(searchTerm);
+    },[searchTerm])
 
     const container = useRef(null);
 
@@ -73,7 +75,8 @@ const Header = () => {
             duration: 1.2,
             stagger:0.1,
         });
-    }, {
+    },
+        {
         scope: container,
     });
 
@@ -91,15 +94,12 @@ const Header = () => {
                 <div  className="wrapper">
                     <header className="hero-item" >
                         <h1>Find <span className="text-gradient">Movies</span> You'll Enjoy Without a Hassle!</h1>
-                    </header>
-                    <div className="hero-img hero-item flex flex-col mx-auto justify-center my-10 ">
-                        <img src={heroImg} className=" h-80" />
-                    </div>
+                        <div className="hero-img hero-item flex flex-col mx-auto justify-center my-10 ">
+                            <img src={heroImg} className=" h-80" />
+                        </div>
 
-                    <div className="hero-item">
-                        <Search className="hero-item" searchTerm={searchTerm} setSearchTerm={setSearchTerm}/>
-                        <h1 className="hero-item text-white">{searchTerm}</h1>
-                    </div>
+                            <Search className="hero-item" searchTerm={searchTerm} setSearchTerm={setSearchTerm}/>
+                    </header>
 
                     <section className="flex flex-col  items-center justify-center mt-15">
                         <h2>All Movies</h2><br/>

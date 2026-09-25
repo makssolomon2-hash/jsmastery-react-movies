@@ -1,7 +1,11 @@
 import React from 'react';
 import starImg from '../public/star.svg';
+import {useGSAP} from "@gsap/react";
+import gsap from "gsap";
 
 const MovieCard = ({ movie: { title, vote_average, poster_path, release_date, original_language, } }) => {
+
+
     return (
         <div className="movie-card ">
 
@@ -11,7 +15,7 @@ const MovieCard = ({ movie: { title, vote_average, poster_path, release_date, or
                 className="w-150 p-3 rounded-2xl "
             />
 
-            <div className="my-3">
+            <div className="my-1">
                 <p className="text-2xl font-bold p-2"> {title}</p>
 
                 <div className="content">
