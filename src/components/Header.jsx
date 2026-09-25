@@ -10,6 +10,8 @@ import { useGSAP } from "@gsap/react";
 
 //Fetch the API
 import {useEffect} from "react";
+import Spiner from "./Spiner.jsx";
+import MovieCard from "./MovieCard.jsx";
 const API_BASE_URL = 'https://api.themoviedb.org/3';
 const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
 
@@ -99,29 +101,22 @@ const Header = () => {
                         <h1 className="hero-item text-white">{searchTerm}</h1>
                     </div>
 
-                    <section className="flex flex-wrap  items-center justify-center mt-15">
-                        <h2>All Movies</h2>s
+                    <section className="flex flex-col  items-center justify-center mt-15">
+                        <h2>All Movies</h2><br/>
+
 
                         <div className="">
                             {isLoading ? (
-                                <p className="text-5xl font-bold">Loading...</p>
+                                <div className=" flex-col justify-center">
+                                    <br/>
+                                    <Spiner/>
+                                </div>
                             ) : errorMessage ? (
                                 <p className="text-red-500">{errorMessage}</p>
                             ) : (
-                                <ul className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+                                <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                                     {movieList.map((movie) =>(
-                                        <div className="movie-card flex flex-col mx-auto items-center justify-center w-full p-1 m-5">
-                                            <p className="text-2xl font-bold p-2"> {movie.title}</p>
-                                            <img
-                                                src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-                                                alt={movie.title}
-                                                className="w-150 p-3 rounded-2xl "
-                                            />
-                                            {/*<p className="p-10 w-100">{movie.overview}</p>*/}
-
-                                        </div>
-
-
+                                        <MovieCard key={movie.id} movie={movie} />
                                     ))}
                                 </ul>
                             )}
