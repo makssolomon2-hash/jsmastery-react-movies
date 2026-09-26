@@ -12,8 +12,11 @@ import { useGSAP } from "@gsap/react";
 import {useEffect} from "react";
 import Spiner from "./Spiner.jsx";
 import MovieCard from "./MovieCard.jsx";
+import {useDebounce} from "react-use";
 const API_BASE_URL = 'https://api.themoviedb.org/3';
 const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
+
+
 
 const API_OPTIONS = {
     method: 'GET',
@@ -28,6 +31,9 @@ const Header = () => {
     const [errorMessage, setErrorMessage] = useState('');
     const [movieList, setMovieList] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
+    const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
+
+    useDebounce(() => setDebouncedSearchTerm(searchTerm),600,[searchTerm]); // 600ms debounce
 
     const fetchMovies = async (query = '') => {
         setIsLoading(true);
@@ -63,8 +69,8 @@ const Header = () => {
     }
 
     useEffect(() => {
-        fetchMovies(searchTerm);
-    },[searchTerm])
+        fetchMovies(debouncedSearchTerm);
+    },[debouncedSearchTerm])
 
     const container = useRef(null);
 
