@@ -125,25 +125,18 @@ const Header = () => {
                             <Search className="hero-item" searchTerm={searchTerm} setSearchTerm={setSearchTerm}/>
                     </header>
 
-                    <section className="trending">
-                        <h2>Trending Movies</h2>
+                    {trendingMovies.length > 0 && (
+                        <section className="w-full mt-16">
+                            <h2 className="text-3xl font-bold text-white mb-8">
+                                Trending Movies
+                            </h2>
 
-                        {isTrendingLoading ? (
-                            <ul className="grid grid-cols-5 gap-6">
-                                {[1, 2, 3, 4, 5].map((item) => (
-                                    <li
-                                        key={item}
-                                        className="animate-pulse"
-                                    >
-                                        <div className="h-64 rounded-lg bg-gray-700" />
-                                    </li>
-                                ))}
-                            </ul>
-                        ) : (
                             <ul className="grid grid-cols-5 gap-6">
                                 {trendingMovies.map((movie, index) => (
-                                    <li key={movie.$id}>
-                                        <p>{index + 1}</p>
+                                    <li key={movie.$id} className="relative">
+                                        <p className="absolute -left-3 -top-5 text-4xl font-bold text-white">
+                                            {index + 1}
+                                        </p>
 
                                         <img
                                             src={movie.poster_url}
@@ -153,8 +146,8 @@ const Header = () => {
                                     </li>
                                 ))}
                             </ul>
-                        )}
-                    </section>
+                        </section>
+                    )}
 
                     <section className="flex flex-col  items-center justify-center mt-15">
                         <h2>All Movies</h2><br/>
