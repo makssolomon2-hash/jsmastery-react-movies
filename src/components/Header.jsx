@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useEffect, useState} from 'react';
 import heroBg from '../public/hero-bg.png';
 import Search from "./Search.jsx";
 import heroImg from '../public/hero.png';
@@ -9,11 +9,11 @@ import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 
 //Fetch the API
-import {useEffect} from "react";
+
 import Spiner from "./Spiner.jsx";
 import MovieCard from "./MovieCard.jsx";
 import {useDebounce} from "react-use";
-import {updateSearchCount} from "../appwrite.js";
+import {getTrendingMovies, updateSearchCount} from "../appwrite.js";
 const API_BASE_URL = 'https://api.themoviedb.org/3';
 const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
 
@@ -33,6 +33,8 @@ const Header = () => {
     const [movieList, setMovieList] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
+
+    const [trendingMovies, setTrendingMovies] = useState([]);
 
     useDebounce(() => setDebouncedSearchTerm(searchTerm),600,[searchTerm]); // 600ms debounce
 
@@ -73,9 +75,20 @@ const Header = () => {
         }
     }
 
+    const loadTrendingMovies = async () => {
+        const movies = await getTrendingMovies();
+
+        console.log('MOVIES FROM APPWRITE:', movies);
+
+        setTrendingMovies(movies);
+    };
     useEffect(() => {
         fetchMovies(debouncedSearchTerm);
-    },[debouncedSearchTerm])
+    },[debouncedSearchTerm]);
+
+    useEffect(() => {
+        loadTrendingMovies()
+    }, []);
 
     const container = useRef(null);
 
@@ -111,6 +124,37 @@ const Header = () => {
 
                             <Search className="hero-item" searchTerm={searchTerm} setSearchTerm={setSearchTerm}/>
                     </header>
+
+                    <section className="trending">
+                        <h2>Trending Movies</h2>
+
+                        {isTrendingLoading ? (
+                            <ul className="grid grid-cols-5 gap-6">
+                                {[1, 2, 3, 4, 5].map((item) => (
+                                    <li
+                                        key={item}
+                                        className="animate-pulse"
+                                    >
+                                        <div className="h-64 rounded-lg bg-gray-700" />
+                                    </li>
+                                ))}
+                            </ul>
+                        ) : (
+                            <ul className="grid grid-cols-5 gap-6">
+                                {trendingMovies.map((movie, index) => (
+                                    <li key={movie.$id}>
+                                        <p>{index + 1}</p>
+
+                                        <img
+                                            src={movie.poster_url}
+                                            alt={movie.searchTerm}
+                                            className="w-full h-64 object-cover rounded-lg"
+                                        />
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
+                    </section>
 
                     <section className="flex flex-col  items-center justify-center mt-15">
                         <h2>All Movies</h2><br/>

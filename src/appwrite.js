@@ -48,3 +48,24 @@ export const updateSearchCount = async (searchTerm, movie) => {
         console.error("Appwrite error:", error);
     }
 };
+
+export const getTrendingMovies = async () => {
+    try {
+        const result = await database.listDocuments(
+            DATABASE_ID,
+            TABLE_ID,
+            [
+                Query.limit(5),
+                Query.orderDesc('count'),
+            ]
+        );
+
+        console.log("TRENDING RESULT:", result);
+        console.log("TRENDING DOCUMENTS:", result.documents);
+
+        return result.documents;
+    } catch (error) {
+        console.error("TRENDING ERROR:", error);
+        return [];
+    }
+};
