@@ -9,15 +9,12 @@ import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 
 //Fetch the API
-
 import Spiner from "./Spiner.jsx";
 import MovieCard from "./MovieCard.jsx";
 import {useDebounce} from "react-use";
 import {getTrendingMovies, updateSearchCount} from "../appwrite.js";
 const API_BASE_URL = 'https://api.themoviedb.org/3';
 const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
-
-
 
 const API_OPTIONS = {
     method: 'GET',
@@ -33,9 +30,7 @@ const Header = () => {
     const [movieList, setMovieList] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
-
     const [trendingMovies, setTrendingMovies] = useState([]);
-
     useDebounce(() => setDebouncedSearchTerm(searchTerm),600,[searchTerm]); // 600ms debounce
 
     const fetchMovies = async (query = '') => {
@@ -66,7 +61,6 @@ const Header = () => {
             if(query && data.results.length > 0){
                 await updateSearchCount(query,data.results[0]);
             }
-
         } catch (error) {
             console.error(`Error fetching movies: ${error}`);
             setErrorMessage('Error fetching movies.')
@@ -74,14 +68,13 @@ const Header = () => {
             setIsLoading(false);
         }
     }
-
     const loadTrendingMovies = async () => {
         const movies = await getTrendingMovies();
-
         console.log('MOVIES FROM APPWRITE:', movies);
-
         setTrendingMovies(movies);
     };
+
+
     useEffect(() => {
         fetchMovies(debouncedSearchTerm);
     },[debouncedSearchTerm]);
@@ -104,7 +97,6 @@ const Header = () => {
         scope: container,
     });
 
-    
     return (
         <main ref={container}>
             <img
@@ -127,13 +119,13 @@ const Header = () => {
 
                     {trendingMovies.length > 0 && (
                         <section className="w-full mt-16">
-                            <h2 className="text-3xl font-bold text-white mb-8">
+                            <h2 className="flex flex-row justify-center text-3xl font-bold text-white mb-8">
                                 Trending Movies
                             </h2>
 
                             <ul className="grid grid-cols-5 gap-6">
                                 {trendingMovies.map((movie, index) => (
-                                    <li key={movie.$id} className="relative">
+                                    <li key={movie.$id} className="movie-card relative   hover:scale-[1.03]">
                                         <p className="absolute -left-3 -top-5 text-4xl font-bold text-white">
                                             {index + 1}
                                         </p>
@@ -149,13 +141,12 @@ const Header = () => {
                         </section>
                     )}
 
-                    <section className="flex flex-col  items-center justify-center mt-15">
+                    <section className="flex flex-col items-center justify-center mt-15">
                         <h2>All Movies</h2><br/>
-
 
                         <div className="">
                             {isLoading ? (
-                                <div className=" flex-col justify-center">
+                                <div className="flex-col justify-center">
                                     <br/>
                                     <Spiner/>
                                 </div>
@@ -169,13 +160,7 @@ const Header = () => {
                                 </ul>
                             )}
                         </div>
-
-
-
-                        {/*{errorMessage && <p className="text-red-500">{errorMessage}</p>}*/}
                     </section>
-
-
                 </div>
             </div>
         </main>

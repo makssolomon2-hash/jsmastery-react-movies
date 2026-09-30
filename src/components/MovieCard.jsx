@@ -7,7 +7,7 @@ const MovieCard = ({ movie: { title, vote_average, poster_path, release_date, or
 
 
     return (
-        <div className="movie-card ">
+        <div className="movie-card hover:scale-[1.03] ">
 
             <img
                 src={`https://image.tmdb.org/t/p/w500${poster_path}`}

@@ -51,19 +51,18 @@ export const updateSearchCount = async (searchTerm, movie) => {
 
 export const getTrendingMovies = async () => {
     try {
-        const result = await database.listDocuments(
+        const result = await tablesDB.listRows(
             DATABASE_ID,
             TABLE_ID,
             [
                 Query.limit(5),
-                Query.orderDesc('count'),
+                Query.orderDesc("count"),
             ]
         );
 
-        console.log("TRENDING RESULT:", result);
-        console.log("TRENDING DOCUMENTS:", result.documents);
+        console.log("TRENDING ROWS:", result.rows);
 
-        return result.documents;
+        return result.rows;
     } catch (error) {
         console.error("TRENDING ERROR:", error);
         return [];
